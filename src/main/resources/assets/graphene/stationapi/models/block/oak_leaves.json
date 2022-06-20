@@ -1,0 +1,21 @@
+{
+    "linkedOBJ": "graphene:block/bushy_leaves_4",
+    "parent": "block/block",
+    "offset": [0.5, 0.5, 0.5],
+    "useAO": true,
+    "materials": {
+        "particle": {
+            "texture": "graphene:block/oak_leaves"
+        },
+        "Leaves": {
+            "texture": "graphene:block/oak_leaves",
+            "shade": false,
+            "tintIndex": 0
+        },
+        "Outer": {
+            "texture": "graphene:block/oak_leaves_outer",
+            "shade": false,
+            "tintIndex": 0
+        }
+    }
+}

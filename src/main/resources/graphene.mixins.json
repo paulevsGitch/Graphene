@@ -3,7 +3,9 @@
 	"minVersion": "0.8",
 	"package": "paulevs.graphene.mixin",
 	"compatibilityLevel": "JAVA_17",
-	"mixins": [],
+	"mixins": [
+		"LeavesBlockMixin"
+	],
 	"client": [
 		"FoliageColourMixin",
 		"GameRendererMixin",

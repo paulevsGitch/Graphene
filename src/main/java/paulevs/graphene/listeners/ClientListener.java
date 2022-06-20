@@ -11,12 +11,12 @@ import paulevs.graphene.Graphene;
 public class ClientListener {
 	@EventListener
 	public void afterBlocksInit(AfterBlockAndItemRegisterEvent event) {
-		System.out.println("Register model replacements!");
-		ModelUtil.registerReplacement(Identifier.of("block/leaves"), Graphene.makeID("block/birch_leaves"));
+		ModelUtil.registerReplacement(Identifier.of("block/leaves"), Graphene.makeID("block/oak_leaves"));
 		
 		if (FabricLoader.getInstance().isModLoaded("advancedtrees")) {
 			ModID id = ModID.of("advancedtrees");
 			ModelUtil.registerReplacement(id.id("block/birch_leaves"), Graphene.makeID("block/birch_leaves"));
+			ModelUtil.registerReplacement(id.id("block/oak_leaves"), Graphene.makeID("block/oak_leaves"));
 		}
 	}
 }
