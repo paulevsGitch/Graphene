@@ -1,7 +1,0 @@
-{
-	"parent": "minecraft:block/bushy_leaves",
-	"textures": {
-		"leaves": "minecraft:block/birch_leaves",
-		"outer": "minecraft:block/birch_leaves_outer"
-	}
-}

@@ -19,7 +19,11 @@
 	"icon": "assets/graphene/icon.png",
 
 	"environment": "*",
-	"entrypoints": {},
+	"entrypoints": {
+		"stationapi:event_bus_client": [
+			"paulevs.graphene.listeners.ClientListener"
+		]
+	},
 	"mixins": [
 		"graphene.mixins.json"
 	],
