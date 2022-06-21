@@ -70,6 +70,9 @@ dependencies {
 	modImplementation ("com.github.paulevsGitch:BHCreative:${project.bhcreative_version}") {
 		transitive false
 	}
+	modImplementation ("com.github.paulevsGitch:AdvancedTrees:${project.advancedtrees_version}") {
+		transitive false
+	}
 }
 
 processResources {
