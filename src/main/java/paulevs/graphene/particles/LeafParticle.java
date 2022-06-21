@@ -16,6 +16,8 @@ import paulevs.graphene.storage.CustomParticles.ParticleInfo;
 public class LeafParticle extends BaseParticle implements CustomParticle {
 	private final Identifier atlas;
 	private final boolean flipped;
+	private final int delayAge;
+	private float scale;
 	
 	public LeafParticle(Level level, double x, double y, double z, ParticleInfo info) {
 		super(level, x, y, z, 0, 0, 0);
@@ -26,6 +28,8 @@ public class LeafParticle extends BaseParticle implements CustomParticle {
 		this.flipped = rand.nextBoolean();
 		this.textureIndex = info.textureIndex().get(rand);
 		this.atlas = info.atlas();
+		this.delayAge = this.maxAge - 20;
+		this.scale = 1.0F;
 		
 		BlockPos pos = new BlockPos(MathHelper.floor(x), MathHelper.floor(y), MathHelper.floor(z));
 		BlockState state = BlocksUtil.getBlockState(level, pos.x, pos.y, pos.z);
@@ -40,6 +44,10 @@ public class LeafParticle extends BaseParticle implements CustomParticle {
 	@Override
 	public void tick() {
 		this.velocityY = -0.05;
+		if (this.age > this.delayAge) {
+			float delta = (this.age - this.delayAge) / 20.0F;
+			this.scale = 1.0F - delta;
+		}
 		super.tick();
 	}
 	
@@ -50,24 +58,29 @@ public class LeafParticle extends BaseParticle implements CustomParticle {
 	
 	@Override
 	public void render(Tessellator tessellator, float delta, float x, float y, float z, float width, float height) {
-		if (flipped) renderFlipped(tessellator, delta, x, y, z, width, height);
-		else super.render(tessellator, delta, x, y, z, width, height);
+		render(tessellator, delta, x, y, z, width, height, flipped);
 	}
 	
-	protected void renderFlipped(Tessellator tessellator, float delta, float x, float y, float z, float width, float height) {
-		float f2 = (float) (this.textureIndex % 16) / 16.0F;
-		float f3 = f2 + 0.0624375F;
-		float f4 = (float) (this.textureIndex / 16) / 16.0F;
-		float f5 = f4 + 0.0624375F;
-		float f6 = 0.1F * this.size;
-		float f7 = (float) (this.prevX + (this.x - this.prevX) * (double) delta - posX);
-		float f8 = (float) (this.prevY + (this.y - this.prevY) * (double) delta - posY);
-		float f9 = (float) (this.prevZ + (this.z - this.prevZ) * (double) delta - posZ);
-		float f10 = this.getBrightnessAtEyes(delta);
-		tessellator.colour(this.colorR * f10, this.colorG * f10, this.colorB * f10);
-		tessellator.vertex(f7 - x * f6 - width * f6, f8 - y * f6, f9 - z * f6 - height * f6, f2, f5);
-		tessellator.vertex(f7 - x * f6 + width * f6, f8 + y * f6, f9 - z * f6 + height * f6, f2, f4);
-		tessellator.vertex(f7 + x * f6 + width * f6, f8 + y * f6, f9 + z * f6 + height * f6, f3, f4);
-		tessellator.vertex(f7 + x * f6 - width * f6, f8 - y * f6, f9 + z * f6 - height * f6, f3, f5);
+	protected void render(Tessellator tessellator, float delta, float x, float y, float z, float width, float height, boolean flipped) {
+		float u1 = (float) (this.textureIndex & 15) / 16.0F;
+		float u2 = u1 + 0.0624375F;
+		float v1 = (float) (this.textureIndex >> 4) / 16.0F;
+		float v2 = v1 + 0.0624375F;
+		float side = 0.1F * this.size * scale;
+		float px = (float) (this.prevX + (this.x - this.prevX) * (double) delta - posX);
+		float py = (float) (this.prevY + (this.y - this.prevY) * (double) delta - posY);
+		float pz = (float) (this.prevZ + (this.z - this.prevZ) * (double) delta - posZ);
+		float light = this.getBrightnessAtEyes(delta);
+		
+		if (flipped) {
+			float u = u1;
+			u1 = u2;
+			u2 = u;
+		}
+		tessellator.colour(this.colorR * light, this.colorG * light, this.colorB * light);
+		tessellator.vertex(px - x * side - width * side, py - y * side, pz - z * side - height * side, u2, v2);
+		tessellator.vertex(px - x * side + width * side, py + y * side, pz - z * side + height * side, u2, v1);
+		tessellator.vertex(px + x * side + width * side, py + y * side, pz + z * side + height * side, u1, v1);
+		tessellator.vertex(px + x * side - width * side, py - y * side, pz + z * side - height * side, u1, v2);
 	}
 }
