@@ -83,4 +83,8 @@ public class LeafParticle extends BaseParticle implements CustomParticle {
 		tessellator.vertex(px + x * side + width * side, py + y * side, pz + z * side + height * side, u1, v1);
 		tessellator.vertex(px + x * side - width * side, py - y * side, pz + z * side - height * side, u1, v2);
 	}
+	
+	public static float getChance(Level level) {
+		return level.isRaining() ? 0.02F : 0.002F;
+	}
 }

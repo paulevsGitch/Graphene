@@ -23,7 +23,7 @@ public abstract class ATLeavesBlockMixin extends BaseBlock {
 	
 	@Environment(value= EnvType.CLIENT)
 	public void randomDisplayTick(Level level, int x, int y, int z, Random random) {
-		if (random.nextInt(256) == 0 && BlocksUtil.getBlockState(level, x, y - 1, z).isAir()) {
+		if (random.nextFloat() < LeafParticle.getChance(level) && BlocksUtil.getBlockState(level, x, y - 1, z).isAir()) {
 			ParticleInfo info = CustomParticles.getInfo(BlocksUtil.getBlockState(level, x, y, z));
 			if (info != null) {
 				ClientUtil.getMinecraft().particleManager.addParticle(new LeafParticle(level, x, y, z, info));
