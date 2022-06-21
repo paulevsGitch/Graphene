@@ -23,8 +23,12 @@ public class CustomParticles {
 		return PARTICLES.get(state);
 	}
 	
+	private static void register(BlockState state, Identifier atlas, RandomIntProvider textureIndex) {
+		PARTICLES.put(state, new ParticleInfo(atlas, textureIndex));
+	}
+	
 	private static void register(BaseBlock block, Identifier atlas, RandomIntProvider textureIndex) {
-		PARTICLES.put(((BlockStateHolder) block).getDefaultState(), new ParticleInfo(atlas, textureIndex));
+		((BlockStateHolder) block).getStateManager().getStates().forEach(state -> register(state, atlas, textureIndex));
 	}
 	
 	private static void register(Identifier id, BlockRegistry registry, Identifier atlas, RandomIntProvider textureIndex) {
