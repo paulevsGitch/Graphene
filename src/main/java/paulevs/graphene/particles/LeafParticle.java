@@ -21,12 +21,12 @@ public class LeafParticle extends BaseParticle implements CustomParticle {
 	
 	public LeafParticle(Level level, double x, double y, double z, ParticleInfo info) {
 		super(level, x, y, z, 0, 0, 0);
-		this.velocityX = MathUtil.randomRange(-0.1F, 0.1F, rand);
-		this.velocityZ = MathUtil.randomRange(-0.1F, 0.1F, rand);
+		this.velocityX = MathUtil.randomRange(-0.1F, 0.1F, random);
+		this.velocityZ = MathUtil.randomRange(-0.1F, 0.1F, random);
 		this.velocityY = -0.05;
 		this.maxAge = 300;
-		this.flipped = rand.nextBoolean();
-		this.textureIndex = info.textureIndex().get(rand);
+		this.flipped = random.nextBoolean();
+		this.textureIndex = info.textureIndex().get(random);
 		this.atlas = info.atlas();
 		this.delayAge = this.maxAge - 20;
 		this.scale = 1.0F;
@@ -77,7 +77,7 @@ public class LeafParticle extends BaseParticle implements CustomParticle {
 			u1 = u2;
 			u2 = u;
 		}
-		tessellator.colour(this.colorR * light, this.colorG * light, this.colorB * light);
+		tessellator.color(this.colorR * light, this.colorG * light, this.colorB * light);
 		tessellator.vertex(px - x * side - width * side, py - y * side, pz - z * side - height * side, u2, v2);
 		tessellator.vertex(px - x * side + width * side, py + y * side, pz - z * side + height * side, u2, v1);
 		tessellator.vertex(px + x * side + width * side, py + y * side, pz + z * side + height * side, u1, v1);

@@ -19,6 +19,12 @@ public class ClientListener {
 			ModID modID = ModID.of("advancedtrees");
 			ModelUtil.registerReplacement(modID.id("block/birch_leaves"), Graphene.makeID("block/birch_leaves"));
 			ModelUtil.registerReplacement(modID.id("block/oak_leaves"), Graphene.makeID("block/oak_leaves"));
+			
+			ModelUtil.registerReplacement(modID.id("block/birch_stem"), Graphene.makeID("block/birch_stem"));
+			ModelUtil.registerReplacement(modID.id("block/birch_log"), Graphene.makeID("block/birch_log"));
+			for (byte i = 1; i < 6; i++) {
+				ModelUtil.registerReplacement(modID.id("block/birch_log_" + i), Graphene.makeID("block/birch_log_" + i));
+			}
 		}
 		
 		CustomParticles.init(BlockRegistry.INSTANCE);

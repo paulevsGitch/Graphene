@@ -1,0 +1,7 @@
+{
+	"parent": "advancedtrees:block/log_4",
+	"textures": {
+		"top": "graphene:block/birch_log_top",
+		"side": "graphene:block/birch_log_side"
+	}
+}

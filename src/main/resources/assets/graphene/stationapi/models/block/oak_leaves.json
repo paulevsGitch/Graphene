@@ -14,6 +14,7 @@
         },
         "Outer": {
             "texture": "graphene:block/oak_leaves_outer",
+			"direction": "up",
             "shade": false,
             "tintIndex": 0
         }

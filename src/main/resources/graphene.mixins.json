@@ -9,7 +9,7 @@
 	"client": [
 		"LightingCalculatorImplMixin",
 		"ATLeavesBlockMixin",
-		"FoliageColourMixin",
+		"FoliageColorMixin",
 		"GameRendererMixin",
 		"RenderListMixin",
 		"InGameMixin"

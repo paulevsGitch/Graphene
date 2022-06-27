@@ -1,0 +1,6 @@
+{
+	"parent": "advancedtrees:block/stem",
+	"textures": {
+		"all": "graphene:block/birch_stem"
+	}
+}
