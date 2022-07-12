@@ -37,7 +37,7 @@ public class CustomParticles {
 	}
 	
 	public static void init(BlockRegistry registry) {
-		Identifier leafParticles = Graphene.makeID("leaves.png");
+		Identifier leafParticles = Graphene.id("leaves.png");
 		register(BaseBlock.LEAVES, leafParticles, new RandomIntProvider(3, 5));
 		
 		if (FabricLoader.getInstance().isModLoaded("advancedtrees")) {

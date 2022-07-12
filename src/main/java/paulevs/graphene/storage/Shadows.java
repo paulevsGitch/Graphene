@@ -16,7 +16,7 @@ public class Shadows {
 	public MultiBuffer shadowBuffer;
 	
 	public Shadows() {
-		Identifier shadowID = Graphene.makeID("shadows");
+		Identifier shadowID = Graphene.id("shadows");
 		shaderProgram = new ShaderProgram(Shader.create(shadowID, ShaderType.VERTEX), Shader.create(shadowID, ShaderType.FRAGMENT));
 		shadowBuffer = MultiBufferBuilder
 			.start(256, 256)

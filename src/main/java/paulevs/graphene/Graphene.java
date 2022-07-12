@@ -8,7 +8,7 @@ public class Graphene {
 	public static final ModID MOD_ID = ModID.of("graphene");
 	public static Shadows shadows;
 	
-	public static Identifier makeID(String name) {
+	public static Identifier id(String name) {
 		return MOD_ID.id(name);
 	}
 	

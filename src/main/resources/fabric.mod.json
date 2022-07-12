@@ -20,6 +20,9 @@
 
 	"environment": "*",
 	"entrypoints": {
+		"stationapi:event_bus": [
+			"paulevs.graphene.listeners.InitListener"
+		],
 		"stationapi:event_bus_client": [
 			"paulevs.graphene.listeners.ClientListener"
 		]

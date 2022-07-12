@@ -1,6 +1,7 @@
 package paulevs.graphene.mixin;
 
 import net.minecraft.level.BlockView;
+import net.minecraft.level.Level;
 import net.minecraft.util.maths.BlockPos;
 import net.modificationstation.stationapi.api.block.BlockState;
 import net.modificationstation.stationapi.api.client.colour.block.BlockColours;
@@ -16,6 +17,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import paulevs.bhcore.storage.vector.Vec3F;
+import paulevs.graphene.storage.ChunkStorage;
 import paulevs.graphene.storage.QuadData;
 import paulevs.graphene.storage.QuadData.VertexInfo;
 
@@ -25,6 +27,7 @@ import java.util.Random;
 public class BakedModelRendererImplMixin {
 	@Shadow @Final private BlockColours blockColours;
 	@Unique Random random = new Random(0);
+	@Unique Vec3F localPos = new Vec3F();
 	
 	@Inject(method = "renderQuad", at = @At("HEAD"), cancellable = true)
 	private void test(BlockView world, BlockState state, BlockPos pos, VertexConsumer vertexConsumer, MatrixStack.Entry matrixEntry, BakedQuad quad, float[] brightness, int overlay, CallbackInfo info) {
@@ -53,11 +56,10 @@ public class BakedModelRendererImplMixin {
 		QuadData.fillData(quad.getVertexData(), quad.getFace());
 		for (byte i = 0; i < 4; i++) {
 			VertexInfo quadInfo = QuadData.getInfo(i);
-			//Vec3F position = quadInfo.position;
-			Vec3F light = quadInfo.light;
-			light.x = random.nextFloat();//MathUtil.clamp(position.x, 0.0F, 1.0F);
-			light.y = random.nextFloat();//MathUtil.clamp(position.y, 0.0F, 1.0F);
-			light.z = random.nextFloat();//MathUtil.clamp(position.z, 0.0F, 1.0F);
+			double px = pos.x - 0.5 + (double) quadInfo.position.x + (double) quadInfo.normal.x;
+			double py = pos.y - 0.5 + (double) quadInfo.position.y + (double) quadInfo.normal.y;
+			double pz = pos.z - 0.5 + (double) quadInfo.position.z + (double) quadInfo.normal.z;
+			ChunkStorage.getLight(quadInfo.light, (Level) world, px, py, pz);
 		}
 		
 		vertexConsumer.quad(matrixEntry, quad, brightness, r, g, b, new int[] { 0, 0, 0, 0 }, overlay, true);
