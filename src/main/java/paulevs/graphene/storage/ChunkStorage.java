@@ -16,8 +16,10 @@ import paulevs.graphene.Graphene;
 public class ChunkStorage {
 	private static final int LIGHT_DATA = SectionDataHandler.register(Graphene.id("color"), () -> new IntArraySectionData(4096));
 	private static final Vec3F[] INTERPOLATION_CELL = new Vec3F[8];
-	private static IntArraySectionData lastData;
-	private static Vec3I lastPos = new Vec3I();
+	private static IntArraySectionData lastDataGet;
+	private static IntArraySectionData lastDataSet;
+	private static Vec3I lastPosGet = new Vec3I();
+	private static Vec3I lastPosSet = new Vec3I();
 	
 	static {
 		for (byte i = 0; i < 8; i++) INTERPOLATION_CELL[i] = new Vec3F();
@@ -72,16 +74,18 @@ public class ChunkStorage {
 		int sectionX = x >> 4;
 		int sectionZ = z >> 4;
 		
-		if (lastData == null || sectionX != lastPos.x || sectionX != lastPos.y || sectionX != lastPos.z) {
+		if (lastDataGet == null || sectionX != lastPosGet.x || sectionX != lastPosGet.y || sectionX != lastPosGet.z) {
 			Chunk chunk = level.getChunkFromCache(sectionX, sectionZ);
 			ChunkSection[] sections = ((ChunkSectionsAccessor) chunk).getSections();
 			ChunkSection section = sections[sectionY];
 			if (section == null) return 0;
-			lastData = ChunkStorage.getSectionLight(section);
-			lastPos.set(sectionX, sectionY, sectionZ);
+			lastDataGet = ChunkStorage.getSectionLight(section);
+			lastPosGet.set(sectionX, sectionY, sectionZ);
 		}
 		
-		return lastData.getData(MathUtil.getIndex16(x & 15, y & 15, z & 15));
+		synchronized (lastDataGet) {
+			return lastDataGet.getData(MathUtil.getIndex16(x & 15, y & 15, z & 15));
+		}
 	}
 	
 	public static void setLight(Level level, int x, int y, int z, int light) {
@@ -91,7 +95,7 @@ public class ChunkStorage {
 		int sectionX = x >> 4;
 		int sectionZ = z >> 4;
 		
-		if (lastData == null || sectionX != lastPos.x || sectionX != lastPos.y || sectionX != lastPos.z) {
+		if (lastDataSet == null || sectionX != lastPosSet.x || sectionX != lastPosSet.y || sectionX != lastPosSet.z) {
 			Chunk chunk = level.getChunkFromCache(sectionX, sectionZ);
 			ChunkSection[] sections = ((ChunkSectionsAccessor) chunk).getSections();
 			ChunkSection section = sections[sectionY];
@@ -99,11 +103,13 @@ public class ChunkStorage {
 				section = new ChunkSection(y >> 4);
 				sections[sectionY] = section;
 			}
-			lastData = ChunkStorage.getSectionLight(section);
-			lastPos.set(sectionX, sectionY, sectionZ);
+			lastDataSet = ChunkStorage.getSectionLight(section);
+			lastPosSet.set(sectionX, sectionY, sectionZ);
 		}
 		
-		lastData.setData(MathUtil.getIndex16(x & 15, y & 15, z & 15), light);
+		synchronized (lastDataSet) {
+			lastDataSet.setData(MathUtil.getIndex16(x & 15, y & 15, z & 15), light);
+		}
 	}
 	
 	public static void init() {}
