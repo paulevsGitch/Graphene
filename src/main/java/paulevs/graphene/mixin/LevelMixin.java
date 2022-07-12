@@ -14,7 +14,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import paulevs.bhcore.storage.vector.Vec3I;
 import paulevs.bhcore.util.LogUtil;
 import paulevs.graphene.LightPropagator;
 
@@ -39,6 +38,6 @@ public abstract class LevelMixin implements BlockStateView, HeightLimitView {
 	private void graphene_setBlockInChunk(int x, int y, int z, int id, int meta, CallbackInfoReturnable<Boolean> info) {
 		BaseBlock block = BaseBlock.BY_ID[id];
 		if (block == null || BaseBlock.EMITTANCE[id] == 0) return;
-		LightPropagator.addLight(Level.class.cast(this), new Vec3I(x, y, z), (byte) 5, 0xFF0000);
+		LightPropagator.addLight(Level.class.cast(this), x, y, z, (byte) 5, 0xFF0000);
 	}
 }
