@@ -38,6 +38,9 @@ public abstract class LevelMixin implements BlockStateView, HeightLimitView {
 	private void graphene_setBlockInChunk(int x, int y, int z, int id, int meta, CallbackInfoReturnable<Boolean> info) {
 		BaseBlock block = BaseBlock.BY_ID[id];
 		if (block == null || BaseBlock.EMITTANCE[id] == 0) return;
-		LightPropagator.addLight(Level.class.cast(this), x, y, z, (byte) 5, 0xFF0000);
+		int color = 0xFF0000;
+		if (block == BaseBlock.GLOWSTONE) color = 0x00FF00;
+		else if (block == BaseBlock.TORCH) color = 0x0000FF;
+		LightPropagator.addLight(Level.class.cast(this), x, y, z, (byte) 5, color);
 	}
 }

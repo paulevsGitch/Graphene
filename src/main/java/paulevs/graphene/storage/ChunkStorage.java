@@ -77,6 +77,7 @@ public class ChunkStorage {
 		if (lastDataGet == null || sectionX != lastPosGet.x || sectionX != lastPosGet.y || sectionX != lastPosGet.z) {
 			Chunk chunk = level.getChunkFromCache(sectionX, sectionZ);
 			ChunkSection[] sections = ((ChunkSectionsAccessor) chunk).getSections();
+			if (sectionY >= sections.length) return 0;
 			ChunkSection section = sections[sectionY];
 			if (section == null) return 0;
 			lastDataGet = ChunkStorage.getSectionLight(section);
@@ -98,6 +99,7 @@ public class ChunkStorage {
 		if (lastDataSet == null || sectionX != lastPosSet.x || sectionX != lastPosSet.y || sectionX != lastPosSet.z) {
 			Chunk chunk = level.getChunkFromCache(sectionX, sectionZ);
 			ChunkSection[] sections = ((ChunkSectionsAccessor) chunk).getSections();
+			if (sectionY >= sections.length) return;
 			ChunkSection section = sections[sectionY];
 			if (section == null) {
 				section = new ChunkSection(y >> 4);
