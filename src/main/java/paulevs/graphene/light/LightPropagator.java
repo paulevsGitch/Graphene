@@ -1,12 +1,16 @@
-package paulevs.graphene;
+package paulevs.graphene.light;
 
+import net.minecraft.block.BaseBlock;
 import net.minecraft.level.Level;
+import net.minecraft.util.maths.MathHelper;
 import net.modificationstation.stationapi.api.block.BlockState;
 import net.modificationstation.stationapi.api.level.BlockStateView;
 import net.modificationstation.stationapi.api.util.math.Direction;
+import net.modificationstation.stationapi.impl.level.chunk.ChunkSectionsAccessor;
 import paulevs.bhcore.storage.vector.Vec3I;
 import paulevs.bhcore.util.ClientUtil;
 import paulevs.bhcore.util.MathUtil;
+import paulevs.graphene.light.LightData.LightInfo;
 import paulevs.graphene.storage.ChunkStorage;
 
 import java.util.ArrayList;
@@ -27,17 +31,45 @@ public class LightPropagator {
 			LightEntry entry = UPDATES.poll();
 			if (entry == null) continue;
 			fillLight(entry.level, entry.color, entry.pos.x, entry.pos.y, entry.pos.z, entry.radius);
-			synchronized (entry.level) {
-				ClientUtil.updateArea(
-					entry.level,
-					entry.pos.x - entry.radius,
-					entry.pos.y - entry.radius,
-					entry.pos.z - entry.radius,
-					entry.pos.x + entry.radius,
-					entry.pos.y + entry.radius,
-					entry.pos.z + entry.radius
-				);
-			}
+			/*if (entry.level.isClientSide) {
+				synchronized (entry.level) {
+					ClientUtil.updateArea(
+						entry.level,
+						entry.pos.x - entry.radius,
+						entry.pos.y - entry.radius,
+						entry.pos.z - entry.radius,
+						entry.pos.x + entry.radius,
+						entry.pos.y + entry.radius,
+						entry.pos.z + entry.radius
+					);
+				}
+			}*/
+			//entry.level.getChunk(0, 0).markToUpdate();
+			
+			//if (entry.level.isClientSide) {
+				synchronized (entry.level) {
+					/*int minX = (entry.pos.x - entry.radius) >> 4;
+					int minZ = (entry.pos.z - entry.radius) >> 4;
+					int maxX = (entry.pos.x + entry.radius) >> 4;
+					int maxZ = (entry.pos.z + entry.radius) >> 4;
+					ChunkSectionsAccessor accessor = (ChunkSectionsAccessor) entry.level.getChunkFromCache(x, z);
+					accessor.getSections()[0].
+					for (int x = minX; x <= maxX; x++) {
+						for (int z = minZ; z <= maxZ; z++) {
+							entry.level.getChunkFromCache(x, z).markToUpdate();
+						}
+					}*/
+					ClientUtil.updateArea(
+						entry.level,
+						entry.pos.x - entry.radius,
+						entry.pos.y - entry.radius,
+						entry.pos.z - entry.radius,
+						entry.pos.x + entry.radius,
+						entry.pos.y + entry.radius,
+						entry.pos.z + entry.radius
+					);
+				}
+			//}
 		}
 	}
 	
@@ -50,6 +82,14 @@ public class LightPropagator {
 	
 	public static void exitWorld() {
 		UPDATES.clear();
+	}
+	
+	public static void addLight(BlockState state, Level level, int x, int y, int z) {
+		if (state == null || state.isAir()) return;
+		LightInfo info = LightData.getInfo(state);
+		if (info != null) {
+			addLight(level, x, y, z, info.radius, info.color);
+		}
 	}
 	
 	public static void addLight(Level level, int x, int y, int z, byte radius, int color) {
@@ -122,7 +162,9 @@ public class LightPropagator {
 					short b2 = (short) (rgb & 255);
 					
 					int rgb2 = Math.max(r1, r2) << 16 | Math.max(g1, g2) << 8 | Math.max(b1, b2);
-					if (rgb != rgb2) ChunkStorage.setLight(level, pos.x, pos.y, pos.z, rgb2);
+					if (rgb == rgb2) continue;
+					
+					ChunkStorage.setLight(level, pos.x, pos.y, pos.z, rgb2);
 					MASK[maskIndex] = true;
 					ends.add(pos);
 				}
