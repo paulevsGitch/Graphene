@@ -1,5 +1,5 @@
 plugins {
-	id 'babric-loom' version '0.12.10'
+	id 'babric-loom' version '1.4.2'
 	id 'maven-publish'
 }
 
@@ -47,6 +47,18 @@ repositories {
 		name = 'Jitpack'
 		url = 'https://jitpack.io'
 	}
+	// Used for another StationAPI dependency
+	exclusiveContent {
+		forRepository {
+			maven {
+				name = "Modrinth"
+				url = "https://api.modrinth.com/maven"
+			}
+		}
+		filter {
+			includeGroup "maven.modrinth"
+		}
+	}
 	mavenCentral()
 	flatDir {
 		dirs 'libs'
@@ -58,21 +70,12 @@ dependencies {
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
 	mappings "com.github.paulevsGitch:BIN-Mappings-BH:${project.mappings}"
 	modImplementation "babric:fabric-loader:${project.loader_version}"
+	implementation(annotationProcessor("com.github.llamalad7.mixinextras:mixinextras-fabric:${project.mixinextras_version}"))
 
 	implementation "org.slf4j:slf4j-api:1.8.0-beta4"
 	implementation 'org.apache.logging.log4j:log4j-slf4j18-impl:2.17.2'
-
-	modImplementation "net.modificationstation:StationAPI:${project.stapi_version}"
 	
-	modImplementation ("com.github.paulevsGitch:BHCore:${project.bhcore_version}") {
-		transitive false
-	}
-	modImplementation ("com.github.paulevsGitch:BHCreative:${project.bhcreative_version}") {
-		transitive false
-	}
-	modImplementation ("com.github.paulevsGitch:AdvancedTrees:${project.advancedtrees_version}") {
-		transitive false
-	}
+	modImplementation "net.modificationstation:StationAPI:${project.stapi_version}"
 }
 
 processResources {
@@ -84,15 +87,10 @@ processResources {
 }
 
 tasks.withType(JavaCompile).configureEach {
-	// Minecraft 1.18 (1.18-pre2) upwards uses Java 17.
-	// Loom also requires J17.
 	it.options.release = 17
 }
 
 java {
-	// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
-	// if it is present.
-	// If you remove this line, sources will not be generated.
 	withSourcesJar()
 }
 
@@ -102,19 +100,12 @@ jar {
 	}
 }
 
-// configure the maven publication
 publishing {
 	publications {
 		mavenJava(MavenPublication) {
 			from components.java
 		}
 	}
-
 	// See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
-	repositories {
-		// Add repositories to publish to here.
-		// Notice: This block does NOT have the same function as the block in the top level.
-		// The repositories here will be used for publishing your artifact, not for
-		// retrieving dependencies.
-	}
+	repositories {}
 }

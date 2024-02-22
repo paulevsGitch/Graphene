@@ -1,18 +1,12 @@
 package paulevs.graphene;
 
-import net.modificationstation.stationapi.api.registry.Identifier;
-import net.modificationstation.stationapi.api.registry.ModID;
-import paulevs.graphene.storage.Shadows;
+import net.modificationstation.stationapi.api.util.Identifier;
+import net.modificationstation.stationapi.api.util.Namespace;
 
 public class Graphene {
-	public static final ModID MOD_ID = ModID.of("graphene");
-	public static Shadows shadows;
+	public static final Namespace NAMESPACE = Namespace.of("graphene");
 	
 	public static Identifier id(String name) {
-		return MOD_ID.id(name);
-	}
-	
-	public static void initClient() {
-		shadows = new Shadows();
+		return NAMESPACE.id(name);
 	}
 }

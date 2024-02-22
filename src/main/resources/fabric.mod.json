@@ -12,28 +12,18 @@
 		"homepage": "",
 		"sources": "",
 		"issues": "",
-		"discord": ""
+		"discord": "https://discord.gg/qxcP8EjkUC"
 	},
 
 	"license": "MIT",
 	"icon": "assets/graphene/icon.png",
 
 	"environment": "*",
-	"entrypoints": {
-		"stationapi:event_bus": [
-			"paulevs.graphene.listeners.InitListener"
-		],
-		"stationapi:event_bus_client": [
-			"paulevs.graphene.listeners.ClientListener"
-		]
-	},
-	"mixins": [
-		"graphene.mixins.json"
-	],
+	"entrypoints": {},
+	"mixins": [],
 
 	"depends": {
 		"minecraft": "1.0.0-beta.7.3",
-		"bhcore": "*",
 		"stationapi": "*"
 	}
 }
