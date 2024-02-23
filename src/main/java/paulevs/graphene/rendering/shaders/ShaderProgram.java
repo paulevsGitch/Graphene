@@ -15,6 +15,8 @@ import java.util.function.IntFunction;
 
 @Environment(EnvType.CLIENT)
 public class ShaderProgram implements Disposable {
+	private static ShaderProgram activeProgram;
+	
 	private final Map<String, Uniform> uniforms = new Object2ObjectOpenHashMap<>();
 	private final Shader[] shaders;
 	private final int target;
@@ -65,10 +67,16 @@ public class ShaderProgram implements Disposable {
 	
 	public void bind() {
 		GL20.glUseProgram(target);
+		activeProgram = this;
 	}
 	
 	public static void unbind() {
 		GL20.glUseProgram(0);
+		activeProgram = null;
+	}
+	
+	public static ShaderProgram getActiveProgram() {
+		return activeProgram;
 	}
 	
 	@Override

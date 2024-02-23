@@ -7,12 +7,14 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import paulevs.graphene.rendering.disposing.DisposeUtil;
 import paulevs.graphene.rendering.shaders.Programs;
+import paulevs.graphene.rendering.shaders.ShaderProgram;
 
 @Mixin(Minecraft.class)
 public class MinecraftMixin {
 	@Inject(method = "init", at = @At("TAIL"))
 	private void graphene_onInit(CallbackInfo info) {
 		Programs.init();
+		ShaderProgram.unbind();
 	}
 	
 	@Inject(method = "scheduleStop", at = @At("TAIL"))

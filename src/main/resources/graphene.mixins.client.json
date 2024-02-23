@@ -4,7 +4,10 @@
 	"package": "paulevs.graphene.mixin.client",
 	"compatibilityLevel": "JAVA_17",
 	"client": [
+		"AtlasPreparationMixin",
 		"LevelRendererMixin",
+		"AreaRendererMixin",
+		"TessellatorMixin",
 		"MinecraftMixin"
 	],
 	"injectors": {

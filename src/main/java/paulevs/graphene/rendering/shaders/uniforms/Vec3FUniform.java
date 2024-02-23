@@ -18,12 +18,7 @@ public class Vec3FUniform extends Uniform {
 		this.x = x;
 		this.y = y;
 		this.z = z;
-	}
-	
-	public void getValue(float[] out) {
-		out[0] = x;
-		out[1] = y;
-		out[2] = z;
+		bind();
 	}
 	
 	@Override
