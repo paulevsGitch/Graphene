@@ -10,6 +10,9 @@ uniform vec3 uWorldPos;
 varying vec2 vTextureUV;
 varying vec4 vVertexColor;
 varying vec3 vLocalOffset;
+varying vec3 vScreenPos;
+varying vec3 vFogColor;
+varying float vFogDensity;
 
 vec2 getWindHorizontal(vec2 pos) {
 	vec2 delta = 1.0 / vec2(textureSize(uWindMap, 0));
@@ -47,4 +50,7 @@ void main() {
 	gl_Position = gl_ModelViewProjectionMatrix * (gl_Vertex + vec4(wind, 0.0));
 	vTextureUV = gl_MultiTexCoord0.st;
 	vVertexColor = gl_Color;
+	vScreenPos = gl_Position.xyz;
+	vFogDensity = clamp((vScreenPos.z - gl_Fog.start) / (gl_Fog.end - gl_Fog.start), 0.0, 1.0);
+	vFogColor = gl_Fog.color.rgb;
 }
