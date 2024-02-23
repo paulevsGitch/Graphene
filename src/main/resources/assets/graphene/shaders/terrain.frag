@@ -2,7 +2,8 @@
 #extension GL_ARB_explicit_uniform_location : enable
 
 layout (location = 0) uniform sampler2D uDiffuseTexture;
-layout (location = 1) uniform sampler2D uProperties;
+uniform sampler2D uProperties;
+
 uniform vec3 uWorldPos;
 
 in vec2 vTextureUV;

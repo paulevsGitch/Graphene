@@ -7,6 +7,7 @@ import net.modificationstation.stationapi.api.util.Identifier;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 import org.lwjgl.opengl.GL13;
+import paulevs.graphene.Graphene;
 import paulevs.graphene.rendering.disposing.DisposeUtil;
 import paulevs.graphene.rendering.shaders.Programs;
 import paulevs.graphene.rendering.shaders.ShaderProgram;
@@ -79,6 +80,16 @@ public class PropertyAtlas {
 			GL11.GL_UNSIGNED_BYTE,
 			buffer
 		);
+		
+		GL13.glActiveTexture(GL13.GL_TEXTURE0);
+		
+		int texture = Graphene.getMinecraft().textureManager.getTextureId("/assets/graphene/textures/wind_map.png");
+		Programs.TERRAIN_WIND.setTexture(texture);
+		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL11.GL_REPEAT);
+		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL11.GL_REPEAT);
+		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
+		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
+		
 		GL13.glActiveTexture(GL13.GL_TEXTURE0);
 		ShaderProgram.unbind();
 	}
