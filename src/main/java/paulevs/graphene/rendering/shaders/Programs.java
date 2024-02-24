@@ -57,16 +57,18 @@ public class Programs {
 		InputStream stream = Programs.class.getResourceAsStream(path);
 		List<String> shaderCode = load(stream);
 		
-		for (int i = 0; i < shaderCode.size(); i++) {
-			if (!shaderCode.get(i).trim().equals("// INJECT_BLOCK_FUNCTIONS")) continue;
-			shaderCode.addAll(i + 1, blockShaders);
-			break;
-		}
+		if (switchStates.size() > 2) {
+			for (int i = 0; i < shaderCode.size(); i++) {
+				if (!shaderCode.get(i).trim().equals("// INJECT_BLOCK_FUNCTIONS")) continue;
+				shaderCode.addAll(i + 1, blockShaders);
+				break;
+			}
 		
-		for (int i = 0; i < shaderCode.size(); i++) {
-			if (!shaderCode.get(i).trim().equals("// INJECT_BLOCK_SWITCH")) continue;
-			shaderCode.addAll(i + 1, switchStates);
-			break;
+			for (int i = 0; i < shaderCode.size(); i++) {
+				if (!shaderCode.get(i).trim().equals("// INJECT_BLOCK_SWITCH")) continue;
+				shaderCode.addAll(i + 1, switchStates);
+				break;
+			}
 		}
 		
 		if (FabricLoader.getInstance().isDevelopmentEnvironment()) {
@@ -107,16 +109,18 @@ public class Programs {
 		stream = Programs.class.getResourceAsStream(path);
 		shaderCode = load(stream);
 		
-		for (int i = 0; i < shaderCode.size(); i++) {
-			if (!shaderCode.get(i).trim().equals("// INJECT_BLOCK_FUNCTIONS")) continue;
-			shaderCode.addAll(i + 1, blockShaders);
-			break;
-		}
-		
-		for (int i = 0; i < shaderCode.size(); i++) {
-			if (!shaderCode.get(i).trim().equals("// INJECT_BLOCK_SWITCH")) continue;
-			shaderCode.addAll(i + 1, switchStates);
-			break;
+		if (switchStates.size() > 2) {
+			for (int i = 0; i < shaderCode.size(); i++) {
+				if (!shaderCode.get(i).trim().equals("// INJECT_BLOCK_FUNCTIONS")) continue;
+				shaderCode.addAll(i + 1, blockShaders);
+				break;
+			}
+			
+			for (int i = 0; i < shaderCode.size(); i++) {
+				if (!shaderCode.get(i).trim().equals("// INJECT_BLOCK_SWITCH")) continue;
+				shaderCode.addAll(i + 1, switchStates);
+				break;
+			}
 		}
 		
 		if (FabricLoader.getInstance().isDevelopmentEnvironment()) {

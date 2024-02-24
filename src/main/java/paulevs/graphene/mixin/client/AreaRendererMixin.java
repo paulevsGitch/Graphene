@@ -26,6 +26,7 @@ public class AreaRendererMixin {
 	))
 	private void graphene_setPosition(CallbackInfo info) {
 		Programs.TERRAIN_POS.setValue(startX, startY, startZ);
+		Programs.TERRAIN_POS.bind();
 		((GrapheneTessellator) Tessellator.INSTANCE).graphene_setRendering(true);
 	}
 	

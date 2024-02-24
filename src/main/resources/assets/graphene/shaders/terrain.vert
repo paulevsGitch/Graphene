@@ -51,6 +51,17 @@ int getBlockID() {
 	return a << 16 | b;
 }
 
+vec4 getFog() {
+	float fogDensity = 0.0;
+	if (uFogParams.y == 0.0) {
+		fogDensity = 1.0 - 1.0 / exp(vScreenPos.z * uFogParams.x);
+	}
+	else {
+		fogDensity = clamp((vScreenPos.z - uFogParams.x) / (uFogParams.y - uFogParams.x), 0.0, 1.0);
+	}
+	return vec4(uFogColor, fogDensity);
+}
+
 struct VertexData {
 	vec3 worldPos;
 	vec3 localPos;
@@ -77,12 +88,5 @@ void main() {
 	vScreenPos = gl_Position.xyz;
 	vLocalOffset = vertex;
 	vBlockID = blockID;
-
-	vFog.rgb = uFogColor;
-	if (uFogParams.y == 0.0) {
-		vFog.a = 1.0 - 1.0 / exp(vScreenPos.z * uFogParams.x);
-	}
-	else {
-		vFog.a = clamp((vScreenPos.z - uFogParams.x) / (uFogParams.y - uFogParams.x), 0.0, 1.0);
-	}
+	vFog = getFog();
 }

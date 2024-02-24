@@ -27,7 +27,7 @@ public class TessellatorMixin implements GrapheneTessellator {
 	@Shadow private int[] bufferArray;
 	@Shadow private static boolean useTriangles;
 	@Shadow private int index;
-	@Shadow private boolean useFloatBuffer;
+	@Shadow private boolean useVBO;
 	@Shadow private ByteBuffer byteBuffer;
 	
 	@Override
@@ -90,7 +90,7 @@ public class TessellatorMixin implements GrapheneTessellator {
 	private void graphene_addCustomData(CallbackInfo info) {
 		if (!graphene_rendering) return;
 		GL13.glClientActiveTexture(ARBMultitexture.GL_TEXTURE1_ARB);
-		if (this.useFloatBuffer) {
+		if (this.useVBO) {
 			GL11.glTexCoordPointer(2, GL11.GL_SHORT, 32, 28L);
 		}
 		else {

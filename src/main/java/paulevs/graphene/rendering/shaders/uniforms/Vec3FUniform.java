@@ -18,7 +18,6 @@ public class Vec3FUniform extends Uniform {
 		this.x = x;
 		this.y = y;
 		this.z = z;
-		bind();
 	}
 	
 	@Override
