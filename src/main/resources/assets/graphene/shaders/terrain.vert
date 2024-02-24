@@ -6,13 +6,15 @@ uniform sampler2D uWindMap;
 
 uniform float uTime;
 uniform vec3 uWorldPos;
+uniform vec2 uFogParams;
+uniform vec3 uFogColor;
 
 out vec2 vTextureUV;
 out vec4 vVertexColor;
 out vec3 vLocalOffset;
 out vec3 vScreenPos;
-out vec3 vFogColor;
-out float vFogDensity;
+out vec4 vFog;
+
 flat out int vBlockID;
 
 vec2 getWindHorizontal(vec2 pos) {
@@ -76,6 +78,11 @@ void main() {
 	vLocalOffset = vertex;
 	vBlockID = blockID;
 
-	vFogDensity = clamp((vScreenPos.z - gl_Fog.start) / (gl_Fog.end - gl_Fog.start), 0.0, 1.0);
-	vFogColor = gl_Fog.color.rgb;
+	vFog.rgb = uFogColor;
+	if (uFogParams.y == 0.0) {
+		vFog.a = 1.0 - 1.0 / exp(vScreenPos.z * uFogParams.x);
+	}
+	else {
+		vFog.a = clamp((vScreenPos.z - uFogParams.x) / (uFogParams.y - uFogParams.x), 0.0, 1.0);
+	}
 }

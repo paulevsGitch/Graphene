@@ -18,6 +18,9 @@ public class LevelRendererMixin {
 	private void graphene_renderTerrainStart(int layerIndex, double delta, CallbackInfo info) {
 		Programs.TERRAIN_PROGRAM.bind();
 		Programs.TERRAIN_TIME.setValue(((float) ((int) level.getLevelTime() % 24000) + (float) delta) / 24000.0F);
+		Programs.TERRAIN_TIME.bind();
+		Programs.TERRAIN_FOG_PARAMS.bind();
+		Programs.TERRAIN_FOG_COLOR.bind();
 	}
 	
 	@Inject(method = "renderAreas", at = @At("TAIL"))

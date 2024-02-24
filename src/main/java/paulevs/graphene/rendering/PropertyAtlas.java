@@ -61,6 +61,7 @@ public class PropertyAtlas {
 		}
 		Programs.TERRAIN_PROGRAM.bind();
 		Programs.TERRAIN_PROPERTIES.setTexture(texture);
+		Programs.TERRAIN_PROPERTIES.bind();
 		int[] pixels = ((DataBufferInt) atlasImage.getRaster().getDataBuffer()).getData();
 		IntBuffer buffer = ByteBuffer.allocateDirect(pixels.length << 4).order(ByteOrder.LITTLE_ENDIAN).asIntBuffer();
 		buffer.put(pixels);
@@ -85,6 +86,7 @@ public class PropertyAtlas {
 		
 		int texture = Graphene.getMinecraft().textureManager.getTextureId("/assets/graphene/textures/wind_map.png");
 		Programs.TERRAIN_WIND.setTexture(texture);
+		Programs.TERRAIN_WIND.bind();
 		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL11.GL_REPEAT);
 		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL11.GL_REPEAT);
 		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);

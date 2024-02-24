@@ -1,12 +1,11 @@
 package paulevs.graphene.rendering.shaders;
 
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.block.Block;
 import net.modificationstation.stationapi.api.registry.BlockRegistry;
 import net.modificationstation.stationapi.api.util.Identifier;
-import paulevs.graphene.Graphene;
 import paulevs.graphene.rendering.shaders.uniforms.FloatUniform;
 import paulevs.graphene.rendering.shaders.uniforms.TextureUniform;
+import paulevs.graphene.rendering.shaders.uniforms.Vec2FUniform;
 import paulevs.graphene.rendering.shaders.uniforms.Vec3FUniform;
 
 import java.io.BufferedReader;
@@ -23,6 +22,8 @@ public class Programs {
 	public static final Vec3FUniform TERRAIN_POS = TERRAIN_PROGRAM.getUniform("uWorldPos", Vec3FUniform::new);
 	public static final TextureUniform TERRAIN_PROPERTIES = TERRAIN_PROGRAM.getUniform("uProperties", TextureUniform::new);
 	public static final TextureUniform TERRAIN_WIND = TERRAIN_PROGRAM.getUniform("uWindMap", TextureUniform::new);
+	public static final Vec2FUniform TERRAIN_FOG_PARAMS = TERRAIN_PROGRAM.getUniform("uFogParams", Vec2FUniform::new);
+	public static final Vec3FUniform TERRAIN_FOG_COLOR = TERRAIN_PROGRAM.getUniform("uFogColor", Vec3FUniform::new);
 	
 	public static void init() {}
 	

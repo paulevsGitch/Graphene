@@ -17,7 +17,6 @@ public class TextureUniform extends Uniform {
 	
 	public void setTexture(int texture) {
 		this.texture = texture;
-		bind();
 	}
 	
 	public void bind() {

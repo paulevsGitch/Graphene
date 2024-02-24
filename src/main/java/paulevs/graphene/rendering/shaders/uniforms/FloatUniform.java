@@ -14,7 +14,6 @@ public class FloatUniform extends Uniform {
 	
 	public void setValue(float value) {
 		this.value = value;
-		bind();
 	}
 	
 	@Override
