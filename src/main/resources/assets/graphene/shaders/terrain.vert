@@ -39,7 +39,7 @@ vec3 getWind(vec3 worldPos, vec4 properties) {
 	vec2 windPos1 = vec2((worldPos.x + worldPos.z) * 0.01, (worldPos.z - worldPos.x) * 0.01 + windTimeV);
 	vec2 windPos2 = vec2((worldPos.x - worldPos.z) * 0.01, (worldPos.z + worldPos.x) * 0.01 + windTimeH);
 	vec2 hor = getWindHorizontal(windPos1) * 20.0;
-	float ver = texture(uWindMap, windPos2).r * 4.0 - 2.0;
+	float ver = texture(uWindMap, windPos2).r * 3.0 - 1.5;
 	return vec3(hor.x, ver, hor.y) * intensity;
 }
 
