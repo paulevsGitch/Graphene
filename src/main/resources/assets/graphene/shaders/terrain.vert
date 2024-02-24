@@ -7,12 +7,13 @@ uniform sampler2D uWindMap;
 uniform float uTime;
 uniform vec3 uWorldPos;
 
-varying vec2 vTextureUV;
-varying vec4 vVertexColor;
-varying vec3 vLocalOffset;
-varying vec3 vScreenPos;
-varying vec3 vFogColor;
-varying float vFogDensity;
+out vec2 vTextureUV;
+out vec4 vVertexColor;
+out vec3 vLocalOffset;
+out vec3 vScreenPos;
+out vec3 vFogColor;
+out float vFogDensity;
+flat out int vBlockID;
 
 vec2 getWindHorizontal(vec2 pos) {
 	vec2 delta = 1.0 / vec2(textureSize(uWindMap, 0));
@@ -42,15 +43,39 @@ vec3 getWind(vec3 worldPos, vec4 properties) {
 	return vec3(hor.x, ver, hor.y) * intensity;
 }
 
+int getBlockID() {
+	int a = int(gl_MultiTexCoord1.t);
+	int b = int(gl_MultiTexCoord1.s);
+	return a << 16 | b;
+}
+
+struct VertexData {
+	vec3 worldPos;
+	vec3 localPos;
+	vec4 properties;
+};
+
+// INJECT_BLOCK_FUNCTIONS
+
 void main() {
-	vLocalOffset = gl_Vertex.xyz;
 	vec4 properties = texture(uProperties, gl_MultiTexCoord0.st);
-	vec3 worldPos = vLocalOffset + uWorldPos;
+	vec3 worldPos = gl_Vertex.xyz + uWorldPos;
 	vec3 wind = getWind(worldPos, properties);
-	gl_Position = gl_ModelViewProjectionMatrix * (gl_Vertex + vec4(wind, 0.0));
+
 	vTextureUV = gl_MultiTexCoord0.st;
 	vVertexColor = gl_Color;
+
+	VertexData data = VertexData(worldPos, gl_Vertex.xyz, properties);
+	vec3 vertex = gl_Vertex.xyz + wind;
+	int blockID = getBlockID();
+
+	// INJECT_BLOCK_SWITCH
+
+	gl_Position = gl_ModelViewProjectionMatrix * vec4(vertex, 1.0);
 	vScreenPos = gl_Position.xyz;
+	vLocalOffset = vertex;
+	vBlockID = blockID;
+
 	vFogDensity = clamp((vScreenPos.z - gl_Fog.start) / (gl_Fog.end - gl_Fog.start), 0.0, 1.0);
 	vFogColor = gl_Fog.color.rgb;
 }

@@ -1,7 +1,11 @@
 package paulevs.graphene.mixin.client;
 
+import net.minecraft.block.Block;
 import net.minecraft.client.render.Tessellator;
 import net.modificationstation.stationapi.api.util.math.MathHelper;
+import org.lwjgl.opengl.ARBMultitexture;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL13;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -9,21 +13,31 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.At.Shift;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import paulevs.graphene.rendering.TessellatorUVFixer;
+import paulevs.graphene.rendering.GrapheneTessellator;
+
+import java.nio.ByteBuffer;
 
 @Mixin(Tessellator.class)
-public class TessellatorMixin implements TessellatorUVFixer {
+public class TessellatorMixin implements GrapheneTessellator {
 	@Unique private static final float[] GRAPHENE_UV = new float[12];
 	@Unique private static boolean graphene_rendering = false;
+	@Unique private Block graphene_block;
 	
 	@Shadow private int vertexAmount;
 	@Shadow private int[] bufferArray;
 	@Shadow private static boolean useTriangles;
 	@Shadow private int index;
+	@Shadow private boolean useFloatBuffer;
+	@Shadow private ByteBuffer byteBuffer;
 	
 	@Override
 	public void graphene_setRendering(boolean rendering) {
 		graphene_rendering = rendering;
+	}
+	
+	@Override
+	public void graphene_setBlock(Block block) {
+		graphene_block = block;
 	}
 	
 	@Inject(method = "addVertex", at = @At(
@@ -54,6 +68,8 @@ public class TessellatorMixin implements TessellatorUVFixer {
 		au /= count;
 		av /= count;
 		
+		int blockID = graphene_block == null ? 0 : graphene_block.id;
+		
 		for (byte index = 0; index < count; index++) {
 			int uvIndex = index << 1;
 			int dataIndex = this.index - index * 8;
@@ -61,6 +77,27 @@ public class TessellatorMixin implements TessellatorUVFixer {
 			float v = MathHelper.lerp(0.001F, GRAPHENE_UV[uvIndex | 1], av);
 			bufferArray[dataIndex + 3] = Float.floatToRawIntBits(u);
 			bufferArray[dataIndex + 4] = Float.floatToRawIntBits(v);
+			bufferArray[dataIndex + 7] = blockID;
 		}
+	}
+	
+	@Inject(method = "render", at = @At(
+		value = "INVOKE",
+		target = "Lorg/lwjgl/opengl/GL11;glEnableClientState(I)V",
+		ordinal = 1,
+		shift = Shift.AFTER
+	))
+	private void graphene_addCustomData(CallbackInfo info) {
+		if (!graphene_rendering) return;
+		GL13.glClientActiveTexture(ARBMultitexture.GL_TEXTURE1_ARB);
+		if (this.useFloatBuffer) {
+			GL11.glTexCoordPointer(2, GL11.GL_SHORT, 32, 28L);
+		}
+		else {
+			byteBuffer.position(28);
+			GL11.glTexCoordPointer(2, GL11.GL_SHORT, 32, byteBuffer);
+		}
+		GL11.glEnableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
+		GL13.glClientActiveTexture(ARBMultitexture.GL_TEXTURE0_ARB);
 	}
 }
