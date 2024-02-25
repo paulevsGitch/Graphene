@@ -2,10 +2,13 @@ package paulevs.graphene.mixin.client;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.render.Tessellator;
+import net.minecraft.util.BufferManager;
 import net.modificationstation.stationapi.api.util.math.MathHelper;
 import org.lwjgl.opengl.ARBMultitexture;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
+import org.lwjgl.opengl.GL15;
+import org.lwjgl.opengl.GL30;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -16,12 +19,16 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import paulevs.graphene.rendering.GrapheneTessellator;
 
 import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
 
 @Mixin(Tessellator.class)
-public class TessellatorMixin implements GrapheneTessellator {
+public abstract class TessellatorMixin implements GrapheneTessellator {
 	@Unique private static final float[] GRAPHENE_UV = new float[12];
 	@Unique private static boolean graphene_rendering = false;
 	@Unique private Block graphene_block;
+	
+	@Unique private final IntBuffer graphene_vaoTargets = BufferManager.makeIntBuffer(4096);
+	@Unique private final IntBuffer graphene_vboTargets = BufferManager.makeIntBuffer(4096);
 	
 	@Shadow private int vertexAmount;
 	@Shadow private int[] bufferArray;
@@ -29,6 +36,14 @@ public class TessellatorMixin implements GrapheneTessellator {
 	@Shadow private int index;
 	@Shadow private boolean useVBO;
 	@Shadow private ByteBuffer byteBuffer;
+	
+	@Inject(method = "<init>", at = @At("TAIL"))
+	private void graphene_onInit(int par1, CallbackInfo info) {
+		GL30.glGenVertexArrays(graphene_vaoTargets);
+		GL15.glGenBuffers(graphene_vboTargets);
+		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
+		GL30.glBindVertexArray(0);
+	}
 	
 	@Override
 	public void graphene_setRendering(boolean rendering) {

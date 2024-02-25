@@ -4,6 +4,10 @@
 uniform sampler2D uProperties;
 uniform sampler2D uWindMap;
 
+uniform mat4 uProjection;
+uniform mat4 uModelView;
+uniform vec3 uCamepaPos;
+
 uniform float uTime;
 uniform vec3 uWorldPos;
 uniform vec2 uFogParams;
@@ -84,7 +88,7 @@ void main() {
 
 	// INJECT_BLOCK_SWITCH
 
-	gl_Position = gl_ModelViewProjectionMatrix * vec4(vertex, 1.0);
+	gl_Position = uProjection * uModelView * vec4(vertex + uWorldPos - uCamepaPos, 1.0);
 	vScreenPos = gl_Position.xyz;
 	vLocalOffset = vertex;
 	vBlockID = blockID;

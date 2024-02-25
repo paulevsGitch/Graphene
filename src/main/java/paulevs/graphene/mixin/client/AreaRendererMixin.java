@@ -21,13 +21,13 @@ public class AreaRendererMixin {
 	
 	@Inject(method = "update", at = @At(
 		value = "INVOKE",
-		target = "Lorg/lwjgl/opengl/GL11;glNewList(II)V",
-		shift = Shift.AFTER
+		target = "Lnet/minecraft/client/render/Tessellator;start()V",
+		shift = Shift.BEFORE
 	))
 	private void graphene_setPosition(CallbackInfo info) {
+		((GrapheneTessellator) Tessellator.INSTANCE).graphene_setRendering(true);
 		Programs.TERRAIN_POS.setValue(startX, startY, startZ);
 		Programs.TERRAIN_POS.bind();
-		((GrapheneTessellator) Tessellator.INSTANCE).graphene_setRendering(true);
 	}
 	
 	@Inject(method = "update", at = @At(

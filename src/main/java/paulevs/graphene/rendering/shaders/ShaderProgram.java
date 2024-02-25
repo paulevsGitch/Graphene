@@ -1,9 +1,10 @@
 package paulevs.graphene.rendering.shaders;
 
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.modificationstation.stationapi.api.util.Identifier;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 import paulevs.graphene.rendering.disposing.Disposable;
@@ -15,9 +16,8 @@ import java.util.function.IntFunction;
 
 @Environment(EnvType.CLIENT)
 public class ShaderProgram implements Disposable {
-	private static ShaderProgram activeProgram;
-	
 	private final Map<String, Uniform> uniforms = new Object2ObjectOpenHashMap<>();
+	private final Object2IntMap<String> attributes = new Object2IntOpenHashMap<>();
 	private final Shader[] shaders;
 	private final int target;
 	
@@ -50,33 +50,23 @@ public class ShaderProgram implements Disposable {
 	
 	@SuppressWarnings("unchecked")
 	public <T extends Uniform> T getUniform(String name, IntFunction<T> constructor) {
-		Uniform uniform = uniforms.get(name);
-		if (uniform != null) {
-			return (T) uniform;
-		}
-		this.bind();
-		int id = GL20.glGetUniformLocation(this.target, name);
-		T result = constructor.apply(id);
-		uniforms.put(name, result);
-		return result;
+		return (T) uniforms.computeIfAbsent(name, key -> {
+			this.bind();
+			int id = GL20.glGetUniformLocation(this.target, name);
+			return constructor.apply(id);
+		});
 	}
 	
 	public int getAttributeLocation(String name) {
-		return GL20.glGetAttribLocation(target, name);
+		return attributes.computeIfAbsent(name, key -> GL20.glGetAttribLocation(target, name));
 	}
 	
 	public void bind() {
 		GL20.glUseProgram(target);
-		activeProgram = this;
 	}
 	
 	public static void unbind() {
 		GL20.glUseProgram(0);
-		activeProgram = null;
-	}
-	
-	public static ShaderProgram getActiveProgram() {
-		return activeProgram;
 	}
 	
 	@Override
@@ -85,11 +75,5 @@ public class ShaderProgram implements Disposable {
 			shader.dispose();
 		}
 		GL20.glDeleteProgram(target);
-	}
-	
-	public static ShaderProgram create(Identifier id) {
-		Shader vertex = Shader.create(id, ShaderType.VERTEX);
-		Shader fragment = Shader.create(id, ShaderType.FRAGMENT);
-		return new ShaderProgram(vertex, fragment);
 	}
 }
